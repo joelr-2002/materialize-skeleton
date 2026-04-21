@@ -8698,3 +8698,241 @@ input[type=range]::-ms-thumb {
   font-size: 12px;
   color: #9e9e9e;
 }
+
+.steps {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.5;
+  /* Small size */
+}
+
+.steps.vertical {
+  flex-direction: column;
+}
+
+.steps.vertical .step {
+  flex: 1 0 auto;
+  display: block;
+  min-height: 60px;
+  margin-right: 0;
+}
+
+.steps.vertical .step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: 16px;
+  width: 1px;
+  height: calc(100% - 40px);
+  background-color: #e8e8e8;
+  margin-left: 0;
+}
+
+.steps.vertical .step.finish:not(:last-child)::after {
+  background-color: #26a69a;
+}
+
+.steps.vertical .step .step-icon {
+  float: left;
+  margin-right: 16px;
+}
+
+.steps.vertical .step .step-content {
+  min-height: 48px;
+  padding-bottom: 12px;
+  display: block;
+}
+
+.steps.vertical.small .step:not(:last-child)::after {
+  top: 28px;
+  left: 12px;
+  height: calc(100% - 32px);
+}
+
+.steps .step {
+  position: relative;
+  display: flex;
+  flex: 1;
+  vertical-align: top;
+  /* Wait State */
+  /* Process State */
+  /* Finish State */
+  /* Error State */
+}
+
+.steps .step:not(:last-child) {
+  margin-right: 16px;
+}
+
+.steps .step:last-child {
+  flex: none;
+}
+
+.steps .step .step-title {
+  position: relative;
+  display: inline-block;
+  padding-right: 16px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 16px;
+  line-height: 32px;
+}
+
+.steps .step .step-title::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 100%;
+  width: 9999px;
+  height: 1px;
+  background: #e8e8e8;
+}
+
+.steps .step:last-child .step-title::after {
+  display: none;
+}
+
+.steps .step.wait .step-icon {
+  border-color: rgba(0, 0, 0, 0.25);
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.steps .step.wait .step-title {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.steps .step.wait .step-description {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.steps .step.process .step-icon {
+  border-color: #26a69a;
+  background-color: #26a69a;
+  color: #fff;
+}
+
+.steps .step.process .step-title {
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+}
+
+.steps .step.process .step-description {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.steps .step.process .step-title::after {
+  background-color: #e8e8e8;
+}
+
+.steps .step.finish .step-icon {
+  border-color: #26a69a;
+  background-color: #fff;
+  color: #26a69a;
+}
+
+.steps .step.finish .step-title {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.steps .step.finish .step-description {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.steps .step.finish .step-title::after {
+  background-color: #26a69a;
+}
+
+.steps .step.error .step-icon {
+  border-color: #F44336;
+  background-color: #fff;
+  color: #F44336;
+}
+
+.steps .step.error .step-title {
+  color: #F44336;
+}
+
+.steps .step.error .step-description {
+  color: #F44336;
+}
+
+.steps .step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  border: 1px solid transparent;
+  border-radius: 32px;
+  transition: background-color 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+}
+
+.steps .step-icon i {
+  font-size: 1.2rem;
+}
+
+.steps .step-content {
+  display: inline-block;
+  vertical-align: top;
+  flex: 1;
+  overflow: hidden;
+}
+
+.steps .step-subtitle {
+  display: inline;
+  margin-left: 8px;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.steps .step-description {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+}
+
+.steps.small .step-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 24px;
+}
+
+.steps.small .step-icon i {
+  font-size: 1rem;
+}
+
+.steps.small .step-title {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.steps.small .step-title::after {
+  top: 12px;
+}
+
+.steps.clickable .step {
+  cursor: pointer;
+}
+
+.steps.clickable .step:hover .step-title {
+  color: #26a69a;
+}
+
+.steps.clickable .step:hover .step-description {
+  color: #26a69a;
+}
+
+.steps.clickable .step.wait:hover .step-icon {
+  border-color: #26a69a;
+  color: #26a69a;
+}

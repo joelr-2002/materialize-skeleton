@@ -1,0 +1,28 @@
+// Skeleton Loading
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: color('grey', 'lighten-3');
+  border-radius: 2px;
+  
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: skeleton-animation 1.5s infinite;
+  }
+}
+
+@keyframes skeleton-animation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

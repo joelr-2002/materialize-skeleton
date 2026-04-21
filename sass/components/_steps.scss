@@ -1,0 +1,241 @@
+.steps {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.5;
+
+  &.vertical {
+    flex-direction: column;
+    
+    .step {
+      flex: 1 0 auto;
+      display: block;
+      min-height: 60px;
+      margin-right: 0;
+      
+      &:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 36px;
+        left: 16px;
+        width: 1px;
+        height: calc(100% - 40px);
+        background-color: #e8e8e8;
+        margin-left: 0;
+      }
+      
+      &.finish:not(:last-child)::after {
+        background-color: $secondary-color;
+      }
+
+      .step-icon {
+        float: left;
+        margin-right: 16px;
+      }
+      
+      .step-content {
+        min-height: 48px;
+        padding-bottom: 12px;
+        display: block;
+      }
+    }
+
+    &.small {
+      .step:not(:last-child)::after {
+        top: 28px;
+        left: 12px;
+        height: calc(100% - 32px);
+      }
+    }
+  }
+
+  .step {
+    position: relative;
+    display: flex;
+    flex: 1;
+    vertical-align: top;
+    
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+
+    &:last-child {
+      flex: none;
+    }
+    
+    .step-title {
+      position: relative;
+      display: inline-block;
+      padding-right: 16px;
+      color: rgba(0, 0, 0, 0.65);
+      font-size: 16px;
+      line-height: 32px;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 16px;
+        left: 100%;
+        width: 9999px;
+        height: 1px;
+        background: #e8e8e8;
+      }
+    }
+
+    &:last-child .step-title::after {
+      display: none;
+    }
+
+    /* Wait State */
+    &.wait {
+      .step-icon {
+        border-color: rgba(0, 0, 0, 0.25);
+        background-color: #fff;
+        color: rgba(0, 0, 0, 0.25);
+      }
+      .step-title {
+        color: rgba(0, 0, 0, 0.45);
+      }
+      .step-description {
+        color: rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    /* Process State */
+    &.process {
+      .step-icon {
+        border-color: $secondary-color;
+        background-color: $secondary-color;
+        color: #fff;
+      }
+      .step-title {
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+      }
+      .step-description {
+        color: rgba(0, 0, 0, 0.65);
+      }
+      .step-title::after {
+        background-color: #e8e8e8;
+      }
+    }
+
+    /* Finish State */
+    &.finish {
+      .step-icon {
+        border-color: $secondary-color;
+        background-color: #fff;
+        color: $secondary-color;
+      }
+      .step-title {
+        color: rgba(0, 0, 0, 0.65);
+      }
+      .step-description {
+        color: rgba(0, 0, 0, 0.45);
+      }
+      .step-title::after {
+        background-color: $secondary-color;
+      }
+    }
+
+    /* Error State */
+    &.error {
+      .step-icon {
+        border-color: $error-color;
+        background-color: #fff;
+        color: $error-color;
+      }
+      .step-title {
+        color: $error-color;
+      }
+      .step-description {
+        color: $error-color;
+      }
+    }
+  }
+
+  .step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    border: 1px solid transparent;
+    border-radius: 32px;
+    transition: background-color 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+    
+    i {
+      font-size: 1.2rem;
+    }
+  }
+
+  .step-content {
+    display: inline-block;
+    vertical-align: top;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .step-subtitle {
+    display: inline;
+    margin-left: 8px;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .step-description {
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+  }
+
+  /* Small size */
+  &.small {
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      line-height: 24px;
+      border-radius: 24px;
+      
+      i {
+        font-size: 1rem;
+      }
+    }
+    .step-title {
+      font-size: 14px;
+      line-height: 24px;
+      
+      &::after {
+        top: 12px;
+      }
+    }
+  }
+
+  &.clickable {
+    .step {
+      cursor: pointer;
+      
+      &:hover {
+        .step-title {
+          color: $secondary-color;
+        }
+        .step-description {
+          color: $secondary-color;
+        }
+      }
+      
+      &.wait:hover .step-icon {
+        border-color: $secondary-color;
+        color: $secondary-color;
+      }
+    }
+  }
+}

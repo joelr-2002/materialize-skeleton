@@ -12736,3 +12736,135 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Cascader, 'cascader', 'M_Cascader');
   }
 })(cash);
+;(function ($) {
+  'use strict';
+
+  var _defaults = {
+    onChange: null,
+    clickable: true
+  };
+
+  /**
+   * @class
+   *
+   */
+
+  var Steps = function (_Component24) {
+    _inherits(Steps, _Component24);
+
+    /**
+     * Construct Steps instance
+     * @constructor
+     * @param {Element} el
+     * @param {Object} options
+     */
+    function Steps(el, options) {
+      _classCallCheck(this, Steps);
+
+      var _this76 = _possibleConstructorReturn(this, (Steps.__proto__ || Object.getPrototypeOf(Steps)).call(this, Steps, el, options));
+
+      _this76.el.M_Steps = _this76;
+
+      /**
+       * Options for the steps
+       */
+      _this76.options = $.extend({}, Steps.defaults, options);
+
+      _this76._setupEventHandlers();
+      return _this76;
+    }
+
+    _createClass(Steps, [{
+      key: "destroy",
+
+
+      /**
+       * Teardown component
+       */
+      value: function destroy() {
+        this._removeEventHandlers();
+        this.el.M_Steps = undefined;
+      }
+
+      /**
+       * Setup Event Handlers
+       */
+
+    }, {
+      key: "_setupEventHandlers",
+      value: function _setupEventHandlers() {
+        var _this77 = this;
+
+        this._handleStepClickBound = this._handleStepClick.bind(this);
+
+        if (this.options.clickable) {
+          this.$el.find('.step').each(function (stepElem, index) {
+            $(stepElem).on('click', function (e) {
+              return _this77._handleStepClickBound(e, index);
+            });
+          });
+        }
+      }
+
+      /**
+       * Remove Event Handlers
+       */
+
+    }, {
+      key: "_removeEventHandlers",
+      value: function _removeEventHandlers() {
+        var _this78 = this;
+
+        this.$el.find('.step').each(function (stepElem) {
+          $(stepElem).off('click', _this78._handleStepClickBound);
+        });
+      }
+
+      /**
+       * Handle Step Click
+       */
+
+    }, {
+      key: "_handleStepClick",
+      value: function _handleStepClick(e, index) {
+        if (!this.options.clickable) return;
+
+        var stepElem = $(e.currentTarget);
+        if (stepElem.hasClass('disabled')) return;
+
+        if (typeof this.options.onChange === 'function') {
+          this.options.onChange(index, stepElem[0]);
+        }
+      }
+    }], [{
+      key: "init",
+      value: function init(els, options) {
+        return _get(Steps.__proto__ || Object.getPrototypeOf(Steps), "init", this).call(this, this, els, options);
+      }
+
+      /**
+       * Get Instance
+       */
+
+    }, {
+      key: "getInstance",
+      value: function getInstance(el) {
+        var domElem = !!el.jquery ? el[0] : el;
+        return domElem.M_Steps;
+      }
+    }, {
+      key: "defaults",
+      get: function () {
+        return _defaults;
+      }
+    }]);
+
+    return Steps;
+  }(Component);
+
+  M.Steps = Steps;
+
+  if (M.jQueryLoaded) {
+    M.initializeJqueryWrapper(Steps, 'steps', 'M_Steps');
+  }
+})(cash);

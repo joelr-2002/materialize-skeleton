@@ -179,7 +179,8 @@ module.exports = function(grunt) {
           'js/select.js',
           'js/range.js',
           'js/skeleton.js',
-          'js/cascader.js'
+          'js/cascader.js',
+          'js/steps.js'
         ],
         // the location of the resulting JS file
         dest: 'temp/js/materialize.js'
@@ -221,7 +222,8 @@ module.exports = function(grunt) {
           'js/select.js',
           'js/range.js',
           'js/skeleton.js',
-          'js/cascader.js'
+          'js/cascader.js',
+          'js/steps.js'
         ],
         // the location of the resulting JS file
         dest: 'temp/js/materialize_concat.js'
@@ -308,7 +310,8 @@ module.exports = function(grunt) {
               'select.js',
               'range.js',
               'skeleton.js',
-              'cascader.js'
+              'cascader.js',
+              'steps.js'
             ],
             dest: 'materialize-src/js/'
           },

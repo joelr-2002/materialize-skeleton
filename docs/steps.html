@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="Materialize is a modern responsive CSS framework based on Material Design by Google. ">
-    <title>Auto Init - Materialize</title>
+    <title>Steps - Materialize</title>
     <!-- Favicons-->
     <link rel="apple-touch-icon-precomposed" href="images/favicon/apple-touch-icon-152x152.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
@@ -38,7 +38,7 @@
           <div class="nav-wrapper">
             <div class="row">
               <div class="col s12 m10 offset-m1">
-                <h1 class="header">Auto Init</h1>
+                <h1 class="header">Steps</h1>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@
                 </ul>
               </div>
             </li>
-            <li class="bold"><a class="collapsible-header waves-effect waves-teal">Components</a>
+            <li class="bold active"><a class="collapsible-header waves-effect waves-teal">Components</a>
               <div class="collapsible-body">
                 <ul>
                   <li><a href="badges.html">Badges</a></li>
@@ -96,14 +96,14 @@
                   <li><a href="pagination.html">Pagination</a></li>
                   <li><a href="preloader.html">Preloader</a></li>
                   <li><a href="skeleton.html">Skeleton</a></li>
-                  <li><a href="steps.html">Steps</a></li>
+                  <li class="active"><a href="steps.html">Steps</a></li>
                 </ul>
               </div>
             </li>
-            <li class="bold active"><a class="collapsible-header waves-effect waves-teal">JavaScript</a>
+            <li class="bold"><a class="collapsible-header waves-effect waves-teal">JavaScript</a>
               <div class="collapsible-body">
                 <ul>
-                  <li class="active"><a href="auto-init.html">Auto Init</a></li>
+                  <li><a href="auto-init.html">Auto Init</a></li>
                   <li><a href="carousel.html">Carousel</a></li>
                   <li><a href="collapsible.html">Collapsible</a></li>
                   <li><a href="dropdown.html">Dropdown</a></li>
@@ -159,59 +159,283 @@
       </script>
       <div class="patreon-ad"><a class="waves-effect" href="https://www.patreon.com/materialize" target="_blank">Become a Patron</a></div>
     </header>
-    <main><div class="container">
+    <main><div class="container bsa">
   <div class="row">
-
     <div class="col s12 m8 offset-m1 xl7 offset-xl1">
 
-      <div id="introduction" class="section scrollspy">
-        <p class="caption">
-          Auto Init allows you to initialize all of the Materialize Components with a single function call. It is important to note that you cannot pass in options using this method.
-        </p>
-      </div>
+      <div id="steps" class="section scrollspy">
+        <p class="caption">A navigation bar that guides users through the steps of a task.</p>
 
-      <div id="initialization" class="scrollspy section">
-        <h3 class="header">Initialization</h3>
-        <pre><code class="language-javascript">
-  M.AutoInit();
+        <h3 class="header">Basic</h3>
+        <p>The most basic step bar.</p>
+        <div class="row">
+          <div class="col s12">
+            <ul class="steps">
+              <li class="step finish">
+                <div class="step-icon">1</div>
+                <div class="step-content">
+                  <div class="step-title">Finished</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step process">
+                <div class="step-icon">2</div>
+                <div class="step-content">
+                  <div class="step-title">In Progress</div>
+                  <div class="step-subtitle">Left 00:00:08</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon">3</div>
+                <div class="step-content">
+                  <div class="step-title">Waiting</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-markup">
+  &lt;ul class="steps">
+    &lt;li class="step finish">
+      &lt;div class="step-icon">1&lt;/div>
+      &lt;div class="step-content">
+        &lt;div class="step-title">Finished&lt;/div>
+        &lt;div class="step-description">This is a content.&lt;/div>
+      &lt;/div>
+    &lt;/li>
+    &lt;li class="step process">
+      &lt;div class="step-icon">2&lt;/div>
+      &lt;div class="step-content">
+        &lt;div class="step-title">In Progress&lt;/div>
+        &lt;div class="step-subtitle">Left 00:00:08&lt;/div>
+        &lt;div class="step-description">This is a content.&lt;/div>
+      &lt;/div>
+    &lt;/li>
+    &lt;li class="step wait">
+      &lt;div class="step-icon">3&lt;/div>
+      &lt;div class="step-content">
+        &lt;div class="step-title">Waiting&lt;/div>
+        &lt;div class="step-description">This is a content.&lt;/div>
+      &lt;/div>
+    &lt;/li>
+  &lt;/ul>
         </code></pre>
+
+        <h3 class="header">Small Size</h3>
+        <p>By adding the <code class="language-markup">small</code> class to the container, you get a smaller step bar.</p>
+        <div class="row">
+          <div class="col s12">
+            <ul class="steps small">
+              <li class="step finish">
+                <div class="step-icon">1</div>
+                <div class="step-content">
+                  <div class="step-title">Finished</div>
+                </div>
+              </li>
+              <li class="step process">
+                <div class="step-icon">2</div>
+                <div class="step-content">
+                  <div class="step-title">In Progress</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon">3</div>
+                <div class="step-content">
+                  <div class="step-title">Waiting</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-markup">
+  &lt;ul class="steps small">
+    ...
+  &lt;/ul>
+        </code></pre>
+
+        <h3 class="header">Error Status</h3>
+        <p>By adding the <code class="language-markup">error</code> class to a step, you can specify the error state.</p>
+        <div class="row">
+          <div class="col s12">
+            <ul class="steps">
+              <li class="step finish">
+                <div class="step-icon">1</div>
+                <div class="step-content">
+                  <div class="step-title">Finished</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step error">
+                <div class="step-icon">2</div>
+                <div class="step-content">
+                  <div class="step-title">In Process</div>
+                  <div class="step-description">This is an error.</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon">3</div>
+                <div class="step-content">
+                  <div class="step-title">Waiting</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-markup">
+  &lt;li class="step error">
+    ...
+  &lt;/li>
+        </code></pre>
+
+        <h3 class="header">Vertical</h3>
+        <p>A simple step bar in the vertical orientation using the <code class="language-markup">vertical</code> class.</p>
+        <div class="row">
+          <div class="col s12 m6">
+            <ul class="steps vertical">
+              <li class="step finish">
+                <div class="step-icon">1</div>
+                <div class="step-content">
+                  <div class="step-title">Finished</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step process">
+                <div class="step-icon">2</div>
+                <div class="step-content">
+                  <div class="step-title">In Progress</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon">3</div>
+                <div class="step-content">
+                  <div class="step-title">Waiting</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-markup">
+  &lt;ul class="steps vertical">
+    ...
+  &lt;/ul>
+        </code></pre>
+
+        <h3 class="header">With Icons</h3>
+        <p>You can use your own custom icons by placing Material Icons inside the <code class="language-markup">.step-icon</code> container.</p>
+        <div class="row">
+          <div class="col s12">
+            <ul class="steps">
+              <li class="step finish">
+                <div class="step-icon"><i class="material-icons">person</i></div>
+                <div class="step-content">
+                  <div class="step-title">Login</div>
+                </div>
+              </li>
+              <li class="step finish">
+                <div class="step-icon"><i class="material-icons">verified_user</i></div>
+                <div class="step-content">
+                  <div class="step-title">Verification</div>
+                </div>
+              </li>
+              <li class="step process">
+                <div class="step-icon"><i class="material-icons">payment</i></div>
+                <div class="step-content">
+                  <div class="step-title">Pay</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon"><i class="material-icons">sentiment_satisfied</i></div>
+                <div class="step-content">
+                  <div class="step-title">Done</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre><code class="language-markup">
+  &lt;li class="step finish">
+    &lt;div class="step-icon">&lt;i class="material-icons">person&lt;/i>&lt;/div>
+    ...
+        </code></pre>
+
+        <h3 class="header">Clickable & JavaScript Initialization</h3>
+        <p>By initializing through JavaScript, you can make Steps clickable and handle the `onChange` event.</p>
+        <div class="row">
+          <div class="col s12">
+            <ul class="steps clickable" id="my-steps">
+              <li class="step finish">
+                <div class="step-icon">1</div>
+                <div class="step-content">
+                  <div class="step-title">Step 1</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step process">
+                <div class="step-icon">2</div>
+                <div class="step-content">
+                  <div class="step-title">Step 2</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+              <li class="step wait">
+                <div class="step-icon">3</div>
+                <div class="step-content">
+                  <div class="step-title">Step 3</div>
+                  <div class="step-description">This is a content.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            var elem = document.getElementById('my-steps');
+            if (elem && typeof M.Steps !== 'undefined') {
+              M.Steps.init(elem, {
+                clickable: true,
+                onChange: function(index, stepElement) {
+                  M.toast({html: 'Clicked step ' + (index + 1)});
+                  
+                  // Simple logic to visually update steps (optional)
+                  var allSteps = stepElement.parentElement.querySelectorAll('.step');
+                  for (var i = 0; i < allSteps.length; i++) {
+                    allSteps[i].classList.remove('finish', 'process', 'wait');
+                    if (i < index) allSteps[i].classList.add('finish');
+                    else if (i === index) allSteps[i].classList.add('process');
+                    else allSteps[i].classList.add('wait');
+                  }
+                }
+              });
+            }
+          });
+        </script>
+        
+        <pre><code class="language-markup">
+  &lt;ul class="steps clickable" id="my-steps">
+    ...
+  &lt;/ul>
+        </code></pre>
+        <pre><code class="language-javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var elem = document.getElementById('my-steps');
+    var instance = M.Steps.init(elem, {
+      clickable: true,
+      onChange: function(index, stepElement) {
+        console.log('Clicked step ' + index);
+      }
+    });
+  });
+        </code></pre>
+
       </div>
-
-
-      <div id="options" class="scrollspy section">
-        <h3 class="header">Options</h3>
-        <table class="striped">
-          <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Default</th>
-                <th>Description</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>context</td>
-              <td>Element</td>
-              <td>document.body</td>
-              <td>DOM Element to search within for components.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-
-
-      <div id="options" class="scrollspy section">
-        <h3 class="header">Ignoring Elements</h3>
-
-        <p>If you want <code class="language-javascript">M.AutoInit()</code> to ignore a certain element, you can add the class <code class="language-markdown">.no-autoinit</code> to the element and it will not be initialized by autoinit.</p>
-      </div>
-
-
-
     </div>
+
+    <!-- Table of Contents -->
     <div class="col hide-on-small-only m3 xl3 offset-xl1">
       <div class="toc-wrapper">
         <div class="buysellads hide-on-small-only">
@@ -220,10 +444,7 @@
         </div>
         <div style="height: 1px;">
           <ul class="section table-of-contents">
-            <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#initialization">Initialization</a></li>
-            <li><a href="#options">Options</a></li>
-            <li><a href="#ignoring">Ignoring Elements</a></li>
+            <li><a href="#steps">Steps</a></li>
           </ul>
         </div>
       </div>
@@ -231,7 +452,6 @@
 
   </div>
 </div>
-
     </main>    <footer class="page-footer docs-footer">
       <div class="container">
         <div class="row" style="margin-bottom: 0;">
