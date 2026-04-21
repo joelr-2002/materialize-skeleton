@@ -23,20 +23,20 @@
 
         <h5>CSS Setup</h5>
         <p>Add the <code class="language-markup">skeleton</code> class to any container. Use CSS or inline styles to define dimensions (height, width) and shapes (border-radius).</p>
-        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-markup">
+        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-markup">
 &lt;!-- Circular Skeleton (Avatar) -->
 &lt;div class="skeleton" style="width: 50px; height: 50px; border-radius: 50%;">&lt;/div>
 
 &lt;!-- Rectangular Skeleton (Text/Image) -->
 &lt;div class="skeleton" style="width: 100%; height: 20px;">&lt;/div>
-        </code></pre></div></div></div></div></div></div></div>
+        </code></pre></div></div></div></div></div></div></div></div>
 
         <h5>JavaScript Initialization</h5>
         <p>By initializing through JavaScript, you gain the ability to call the <code class="language-javascript">destroy()</code> method when data has finished loading, which removes the skeleton styling.</p>
-        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-markup">
+        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-markup">
   &lt;div class="my-skeleton-target" style="width: 100%; height: 20px;">&lt;/div>
-        </code></pre></div></div></div></div></div></div></div>
-        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-javascript">
+        </code></pre></div></div></div></div></div></div></div></div>
+        <div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><div class="code-snippet"><pre><code class="language-javascript">
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.my-skeleton-target');
     var instances = M.Skeleton.init(elems, options);
@@ -44,7 +44,7 @@
     // Later, when content has loaded:
     // instances[0].destroy();
   });
-        </code></pre></div></div></div></div></div></div></div>
+        </code></pre></div></div></div></div></div></div></div></div>
 
       </div>
     </div>
