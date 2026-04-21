@@ -12868,3 +12868,185 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Steps, 'steps', 'M_Steps');
   }
 })(cash);
+;(function ($) {
+  'use strict';
+
+  var _defaults = {
+    copyText: 'Copy',
+    copiedText: 'Copied!'
+  };
+
+  /**
+   * @class
+   *
+   */
+
+  var CodeSnippet = function (_Component25) {
+    _inherits(CodeSnippet, _Component25);
+
+    /**
+     * Construct CodeSnippet instance
+     * @constructor
+     * @param {Element} el
+     * @param {Object} options
+     */
+    function CodeSnippet(el, options) {
+      _classCallCheck(this, CodeSnippet);
+
+      var _this79 = _possibleConstructorReturn(this, (CodeSnippet.__proto__ || Object.getPrototypeOf(CodeSnippet)).call(this, CodeSnippet, el, options));
+
+      _this79.el.M_CodeSnippet = _this79;
+
+      /**
+       * Options for the code snippet
+       */
+      _this79.options = $.extend({}, CodeSnippet.defaults, options);
+
+      _this79._setupSnippet();
+      _this79._setupEventHandlers();
+      return _this79;
+    }
+
+    _createClass(CodeSnippet, [{
+      key: "destroy",
+
+
+      /**
+       * Teardown component
+       */
+      value: function destroy() {
+        this._removeEventHandlers();
+        if (this.$copyBtn) {
+          this.$copyBtn.remove();
+        }
+        this.el.M_CodeSnippet = undefined;
+      }
+
+      /**
+       * Setup Code Snippet
+       */
+
+    }, {
+      key: "_setupSnippet",
+      value: function _setupSnippet() {
+        this.$el.addClass('code-snippet');
+        this.$el.css('position', 'relative');
+
+        // Add copy button
+        this.$copyBtn = $('<button class="btn-copy" aria-label="Copy to clipboard" title="Copy to clipboard">' + '<i class="material-icons">content_copy</i>' + '</button>');
+        this.$el.append(this.$copyBtn);
+      }
+
+      /**
+       * Setup Event Handlers
+       */
+
+    }, {
+      key: "_setupEventHandlers",
+      value: function _setupEventHandlers() {
+        this._handleCopyBound = this._handleCopy.bind(this);
+        this.$copyBtn.on('click', this._handleCopyBound);
+
+        // Reset state on mouse leave
+        this._handleMouseLeaveBound = this._handleMouseLeave.bind(this);
+        this.$el.on('mouseleave', this._handleMouseLeaveBound);
+      }
+
+      /**
+       * Remove Event Handlers
+       */
+
+    }, {
+      key: "_removeEventHandlers",
+      value: function _removeEventHandlers() {
+        this.$copyBtn.off('click', this._handleCopyBound);
+        this.$el.off('mouseleave', this._handleMouseLeaveBound);
+      }
+
+      /**
+       * Handle Copy
+       */
+
+    }, {
+      key: "_handleCopy",
+      value: function _handleCopy(e) {
+        var _this80 = this;
+
+        var codeElement = this.el.querySelector('code');
+        if (!codeElement) return;
+
+        var textToCopy = codeElement.innerText;
+
+        // Use Clipboard API if available
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(textToCopy).then(function () {
+            _this80._showCopiedState();
+          }).catch(function (err) {
+            console.error('Could not copy text: ', err);
+          });
+        } else {
+          // Fallback for older browsers
+          var textArea = document.createElement('textarea');
+          textArea.value = textToCopy;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            this._showCopiedState();
+          } catch (err) {
+            console.error('Could not copy text: ', err);
+          }
+          document.body.removeChild(textArea);
+        }
+      }
+    }, {
+      key: "_showCopiedState",
+      value: function _showCopiedState() {
+        this.$copyBtn.html('<i class="material-icons">check</i>');
+        this.$copyBtn.addClass('copied');
+        if (typeof M !== 'undefined' && M.toast) {
+          M.toast({ html: this.options.copiedText, displayLength: 2000 });
+        }
+      }
+    }, {
+      key: "_handleMouseLeave",
+      value: function _handleMouseLeave() {
+        var _this81 = this;
+
+        setTimeout(function () {
+          _this81.$copyBtn.html('<i class="material-icons">content_copy</i>');
+          _this81.$copyBtn.removeClass('copied');
+        }, 300);
+      }
+    }], [{
+      key: "init",
+      value: function init(els, options) {
+        return _get(CodeSnippet.__proto__ || Object.getPrototypeOf(CodeSnippet), "init", this).call(this, this, els, options);
+      }
+
+      /**
+       * Get Instance
+       */
+
+    }, {
+      key: "getInstance",
+      value: function getInstance(el) {
+        var domElem = !!el.jquery ? el[0] : el;
+        return domElem.M_CodeSnippet;
+      }
+    }, {
+      key: "defaults",
+      get: function () {
+        return _defaults;
+      }
+    }]);
+
+    return CodeSnippet;
+  }(Component);
+
+  M.CodeSnippet = CodeSnippet;
+
+  if (M.jQueryLoaded) {
+    M.initializeJqueryWrapper(CodeSnippet, 'codeSnippet', 'M_CodeSnippet');
+  }
+})(cash);

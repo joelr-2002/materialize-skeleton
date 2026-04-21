@@ -254,5 +254,9 @@
     $('.fixed-action-btn.toolbar').floatingActionButton({
       toolbarEnabled: true
     });
+
+    if (typeof M.CodeSnippet !== 'undefined') {
+      $('.code-snippet').codeSnippet();
+    }
   }); // end of document ready
 })(jQuery); // end of jQuery name space
