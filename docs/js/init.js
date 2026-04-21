@@ -256,7 +256,11 @@
     });
 
     if (typeof M.CodeSnippet !== 'undefined') {
-      $('.code-snippet').codeSnippet();
+      let allowedCodeSnippetDocs = ['skeleton.html', 'cascader.html', 'steps.html', 'code-snippet.html'];
+      let currentDoc = window.location.pathname.split('/').pop();
+      if (allowedCodeSnippetDocs.indexOf(currentDoc) !== -1) {
+        $('.code-snippet').codeSnippet();
+      }
     }
   }); // end of document ready
 })(jQuery); // end of jQuery name space

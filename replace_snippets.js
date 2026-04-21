@@ -8,8 +8,18 @@ const files = [
 
 files.forEach(file => {
   let content = fs.readFileSync(file, 'utf8');
-  content = content.replace(/<pre><code/g, '<div class="code-snippet"><pre><code');
-  content = content.replace(/<\/code><\/pre>/g, '</code></pre></div>');
+  content = content.replace(/(<div class="code-snippet">)+(?=<pre><code)/g, '<div class="code-snippet">');
+  content = content.replace(/<\/code><\/pre>(<\/div>)+/g, '</code></pre></div>');
+  content = content.replace(/<pre><code/g, (match, offset, source) => {
+    let context = source.slice(Math.max(0, offset - 40), offset);
+    return /<div class="code-snippet">\s*$/.test(context)
+      ? match
+      : '<div class="code-snippet"><pre><code';
+  });
+  content = content.replace(/<\/code><\/pre>/g, (match, offset, source) => {
+    let context = source.slice(offset + match.length, offset + match.length + 40);
+    return /^\s*<\/div>/.test(context) ? match : '</code></pre></div>';
+  });
   fs.writeFileSync(file, content, 'utf8');
 });
 console.log('Replaced in files');
