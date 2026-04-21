@@ -12688,9 +12688,12 @@ $jscomp.polyfill = function (e, r, p, m) {
         if (this.isOpen) return;
         this.isOpen = true;
         var rect = this.el.getBoundingClientRect();
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
         this.$menus.css({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX
+          top: rect.bottom + scrollTop + 'px',
+          left: rect.left + scrollLeft + 'px'
         });
         this.$menus.addClass('active');
       }
