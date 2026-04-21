@@ -1,0 +1,94 @@
+<div class="container bsa">
+  <div class="row">
+    <div class="col s12 m8 offset-m1 xl7 offset-xl1">
+
+      <div id="cascader" class="section scrollspy">
+        <p class="caption">A Cascade selection box is when you need to select from a set of associated data set. Such as province/city/district.</p>
+
+        <h3 class="header">Usage</h3>
+        <p>Cascader requires an input field to display the selected path and trigger the dropdown menu.</p>
+
+        <h5>HTML Setup</h5>
+        <pre><code class="language-markup">
+  &lt;div class="input-field">
+    &lt;input type="text" id="my-cascader" placeholder="Select region..." readonly>
+    &lt;label for="my-cascader" class="active">Location&lt;/label>
+  &lt;/div>
+        </code></pre>
+
+        <h5>JavaScript Initialization</h5>
+        <pre><code class="language-javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var cascaderData = [
+      {
+        value: 'zhejiang',
+        label: 'Zhejiang',
+        children: [
+          {
+            value: 'hangzhou',
+            label: 'Hangzhou',
+            children: [
+              { value: 'xihu', label: 'West Lake' },
+              { value: 'shangcheng', label: 'Shangcheng' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    var elem = document.getElementById('my-cascader');
+    var instance = M.Cascader.init(elem, {
+      data: cascaderData,
+      onChange: function(selectedPath) {
+        console.log(selectedPath);
+      }
+    });
+  });
+        </code></pre>
+
+        <h3 class="header">Options</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>data</td>
+              <td>Array</td>
+              <td>[]</td>
+              <td>Tree structured data. Each node can have <code class="language-javascript">value</code>, <code class="language-javascript">label</code>, and <code class="language-javascript">children</code>.</td>
+            </tr>
+            <tr>
+              <td>onChange</td>
+              <td>Function</td>
+              <td>null</td>
+              <td>Callback fired when a leaf node is selected. Receives an array of selected option objects.</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="col hide-on-small-only m3 xl3 offset-xl1">
+      <div class="toc-wrapper">
+        <div class="buysellads hide-on-small-only">
+          <!-- CarbonAds Zone Code -->
+          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CKYIK27J&placement=materializecss" id="_carbonads_js"></script>
+        </div>
+        <div style="height: 1px;">
+          <ul class="section table-of-contents">
+            <li><a href="#cascader">Cascader</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

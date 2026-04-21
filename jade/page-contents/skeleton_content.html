@@ -1,0 +1,55 @@
+<div class="container bsa">
+  <div class="row">
+    <div class="col s12 m8 offset-m1 xl7 offset-xl1">
+
+      <div id="skeleton" class="section scrollspy">
+        <p class="caption">Provide a placeholder while content is loading to improve user experience.</p>
+        
+        <h3 class="header">Usage</h3>
+        <p>You can use the skeleton component purely with CSS by adding the <code class="language-markup">skeleton</code> class, or initialize it via JavaScript if you need to destroy it later when content loads.</p>
+
+        <h5>CSS Setup</h5>
+        <p>Add the <code class="language-markup">skeleton</code> class to any container. Use CSS or inline styles to define dimensions (height, width) and shapes (border-radius).</p>
+        <pre><code class="language-markup">
+&lt;!-- Circular Skeleton (Avatar) -->
+&lt;div class="skeleton" style="width: 50px; height: 50px; border-radius: 50%;">&lt;/div>
+
+&lt;!-- Rectangular Skeleton (Text/Image) -->
+&lt;div class="skeleton" style="width: 100%; height: 20px;">&lt;/div>
+        </code></pre>
+
+        <h5>JavaScript Initialization</h5>
+        <p>By initializing through JavaScript, you gain the ability to call the <code class="language-javascript">destroy()</code> method when data has finished loading, which removes the skeleton styling.</p>
+        <pre><code class="language-markup">
+  &lt;div class="my-skeleton-target" style="width: 100%; height: 20px;">&lt;/div>
+        </code></pre>
+        <pre><code class="language-javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.my-skeleton-target');
+    var instances = M.Skeleton.init(elems, options);
+
+    // Later, when content has loaded:
+    // instances[0].destroy();
+  });
+        </code></pre>
+
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="col hide-on-small-only m3 xl3 offset-xl1">
+      <div class="toc-wrapper">
+        <div class="buysellads hide-on-small-only">
+          <!-- CarbonAds Zone Code -->
+          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CKYIK27J&placement=materializecss" id="_carbonads_js"></script>
+        </div>
+        <div style="height: 1px;">
+          <ul class="section table-of-contents">
+            <li><a href="#skeleton">Skeleton</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
