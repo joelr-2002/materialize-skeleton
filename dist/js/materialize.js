@@ -12514,3 +12514,222 @@ $jscomp.polyfill = function (e, r, p, m) {
     M.initializeJqueryWrapper(Skeleton, 'skeleton', 'M_Skeleton');
   }
 })(cash);
+;(function ($) {
+  'use strict';
+
+  var _defaults = {
+    data: [], // Tree data structure
+    onChange: null // Callback when selection is finalized
+  };
+
+  /**
+   * @class
+   *
+   */
+
+  var Cascader = function (_Component23) {
+    _inherits(Cascader, _Component23);
+
+    /**
+     * Construct Cascader instance
+     * @constructor
+     * @param {Element} el
+     * @param {Object} options
+     */
+    function Cascader(el, options) {
+      _classCallCheck(this, Cascader);
+
+      var _this74 = _possibleConstructorReturn(this, (Cascader.__proto__ || Object.getPrototypeOf(Cascader)).call(this, Cascader, el, options));
+
+      _this74.el.M_Cascader = _this74;
+
+      /**
+       * Options for the cascader
+       */
+      _this74.options = $.extend({}, Cascader.defaults, options);
+
+      _this74.isOpen = false;
+      _this74.selectedOptions = [];
+
+      _this74._setupDropdown();
+      _this74._setupEventHandlers();
+      return _this74;
+    }
+
+    _createClass(Cascader, [{
+      key: "destroy",
+
+
+      /**
+       * Teardown component
+       */
+      value: function destroy() {
+        this._removeEventHandlers();
+        if (this.$menus) {
+          this.$menus.remove();
+        }
+        this.el.M_Cascader = undefined;
+      }
+    }, {
+      key: "_setupDropdown",
+      value: function _setupDropdown() {
+        this.$menus = $('<div class="cascader-menus"></div>');
+        $('body').append(this.$menus);
+        this._renderColumn(this.options.data, 0);
+      }
+    }, {
+      key: "_setupEventHandlers",
+      value: function _setupEventHandlers() {
+        this._handleInputClickBound = this._handleInputClick.bind(this);
+        this._handleDocumentClickBound = this._handleDocumentClick.bind(this);
+
+        this.el.addEventListener('click', this._handleInputClickBound);
+        document.addEventListener('click', this._handleDocumentClickBound);
+      }
+    }, {
+      key: "_removeEventHandlers",
+      value: function _removeEventHandlers() {
+        this.el.removeEventListener('click', this._handleInputClickBound);
+        document.removeEventListener('click', this._handleDocumentClickBound);
+      }
+    }, {
+      key: "_handleInputClick",
+      value: function _handleInputClick(e) {
+        e.stopPropagation();
+        this.open();
+      }
+    }, {
+      key: "_handleDocumentClick",
+      value: function _handleDocumentClick(e) {
+        if (!this.isOpen) return;
+        var $target = $(e.target);
+        if (!$target.closest('.cascader-menus').length && $target[0] !== this.el) {
+          this.close();
+        }
+      }
+    }, {
+      key: "_renderColumn",
+      value: function _renderColumn(data, level) {
+        var _this75 = this;
+
+        // Remove any columns at this level or deeper
+        if (!this.$menus || !this.$menus[0]) return;
+
+        var menus = this.$menus[0].querySelectorAll('.cascader-menu');
+        for (var i = 0; i < menus.length; i++) {
+          if (parseInt(menus[i].getAttribute('data-level')) >= level) {
+            menus[i].remove();
+          }
+        }
+
+        if (!data || !data.length) return;
+
+        var $menu = $('<ul class="cascader-menu"></ul>');
+        $menu.attr('data-level', level);
+
+        var _loop = function (_i3) {
+          var item = data[_i3];
+          var hasChildren = item.children && item.children.length > 0;
+          var $li = $('<li class="cascader-menu-item"></li>');
+
+          $li[0].innerHTML = item.label || item.value;
+
+          if (hasChildren) {
+            var expand = document.createElement('span');
+            expand.className = 'cascader-menu-item-expand';
+            expand.innerHTML = '&#9656;'; // Right triangle
+            $li[0].appendChild(expand);
+          }
+
+          $li[0].addEventListener('click', function (e) {
+            e.stopPropagation();
+            var items = $menu[0].querySelectorAll('.cascader-menu-item');
+            for (var j = 0; j < items.length; j++) {
+              items[j].classList.remove('active');
+            }
+            $li[0].classList.add('active');
+
+            _this75.selectedOptions[level] = item;
+            // Clear deeper selections
+            _this75.selectedOptions.splice(level + 1);
+
+            if (hasChildren) {
+              _this75._renderColumn(item.children, level + 1);
+            } else {
+              _this75._finishSelection();
+            }
+          });
+
+          $menu.append($li);
+        };
+
+        for (var _i3 = 0; _i3 < data.length; _i3++) {
+          _loop(_i3);
+        }
+
+        this.$menus.append($menu);
+      }
+    }, {
+      key: "_finishSelection",
+      value: function _finishSelection() {
+        var labels = this.selectedOptions.map(function (opt) {
+          return opt.label || opt.value;
+        }).join(' / ');
+        this.$el.val(labels);
+
+        if (typeof this.options.onChange === 'function') {
+          this.options.onChange(this.selectedOptions);
+        }
+        this.close();
+      }
+    }, {
+      key: "open",
+      value: function open() {
+        if (this.isOpen) return;
+        this.isOpen = true;
+        var rect = this.el.getBoundingClientRect();
+        this.$menus.css({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX
+        });
+        this.$menus.addClass('active');
+      }
+    }, {
+      key: "close",
+      value: function close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.$menus.removeClass('active');
+      }
+    }], [{
+      key: "init",
+      value: function init(els, options) {
+        return _get(Cascader.__proto__ || Object.getPrototypeOf(Cascader), "init", this).call(this, this, els, options);
+      }
+
+      /**
+       * Get Instance
+       */
+
+    }, {
+      key: "getInstance",
+      value: function getInstance(el) {
+        var domElem = !!el.jquery ? el[0] : el;
+        return domElem.M_Cascader;
+      }
+    }, {
+      key: "defaults",
+      get: function () {
+        return _defaults;
+      }
+    }]);
+
+    return Cascader;
+  }(Component);
+
+  M.Cascader = Cascader;
+
+  if (M.jQueryLoaded) {
+    M.initializeJqueryWrapper(Cascader, 'cascader', 'M_Cascader');
+  }
+})(cash);
