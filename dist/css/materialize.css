@@ -8659,6 +8659,33 @@ input[type=range]::-ms-thumb {
   display: flex;
 }
 
+@media only screen and (max-width: 600px) {
+  .cascader-menus {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* allow momentum scrolling for the flex container */
+    -webkit-overflow-scrolling: touch;
+    animation: slideUpCascader 0.3s ease-out;
+  }
+}
+
+@keyframes slideUpCascader {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .cascader-menu {
   display: inline-block;
   min-width: 150px;
@@ -8668,6 +8695,17 @@ input[type=range]::-ms-thumb {
   overflow-y: auto;
   border-right: 1px solid #e0e0e0;
   box-sizing: border-box;
+}
+
+@media only screen and (max-width: 600px) {
+  .cascader-menu {
+    flex: 0 0 auto;
+    min-width: 40vw;
+    /* Take up 40% of viewport width per column so it's obvious there's more */
+    height: 35vh;
+    /* Taller on mobile for better touch targets */
+    border-right: 1px solid #eeeeee;
+  }
 }
 
 .cascader-menu:last-child {
@@ -8683,6 +8721,13 @@ input[type=range]::-ms-thumb {
   justify-content: space-between;
   align-items: center;
   transition: background-color .2s;
+}
+
+@media only screen and (max-width: 600px) {
+  .cascader-menu .cascader-menu-item {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
 }
 
 .cascader-menu .cascader-menu-item:hover {

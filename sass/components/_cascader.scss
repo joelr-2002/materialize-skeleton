@@ -11,6 +11,32 @@
   &.active {
     display: flex;
   }
+
+  // Mobile responsiveness
+  @media #{$small-and-down} {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* allow momentum scrolling for the flex container */
+    -webkit-overflow-scrolling: touch;
+    
+    // Add a dim overlay effect behind the cascader menus (handled via a generic overlay or pseudo-element if we want, but simple bottom sheet style is enough here)
+    
+    // Smooth entrance
+    animation: slideUpCascader 0.3s ease-out;
+  }
+}
+
+@keyframes slideUpCascader {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 .cascader-menu {
@@ -22,6 +48,14 @@
   overflow-y: auto;
   border-right: 1px solid color('grey', 'lighten-2');
   box-sizing: border-box;
+
+  // On mobile, flex children can shrink, but we want them fixed width to allow horizontal scrolling
+  @media #{$small-and-down} {
+    flex: 0 0 auto;
+    min-width: 40vw; /* Take up 40% of viewport width per column so it's obvious there's more */
+    height: 35vh; /* Taller on mobile for better touch targets */
+    border-right: 1px solid color('grey', 'lighten-3');
+  }
 
   &:last-child {
     border-right: none;
@@ -37,6 +71,12 @@
     align-items: center;
     transition: background-color .2s;
     
+    // Increase touch target size for mobile
+    @media #{$small-and-down} {
+      padding: 14px 16px;
+      font-size: 16px;
+    }
+
     &:hover {
       background-color: color('grey', 'lighten-3');
     }
