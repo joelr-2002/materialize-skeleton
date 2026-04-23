@@ -13194,7 +13194,7 @@ $jscomp.polyfill = function (e, r, p, m) {
           if (hasChildren) {
             var $childrenContainer = $('<ul class="tree-children"></ul>');
             if (!isExpanded) {
-              $childrenContainer.hide();
+              $childrenContainer.css('display', 'none');
             }
             _this83._renderNodes(node.children, $childrenContainer, level + 1);
             $li.append($childrenContainer);

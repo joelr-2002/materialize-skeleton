@@ -138,7 +138,7 @@
         if (hasChildren) {
           let $childrenContainer = $('<ul class="tree-children"></ul>');
           if (!isExpanded) {
-            $childrenContainer.hide();
+            $childrenContainer.css('display', 'none');
           }
           this._renderNodes(node.children, $childrenContainer, level + 1);
           $li.append($childrenContainer);
