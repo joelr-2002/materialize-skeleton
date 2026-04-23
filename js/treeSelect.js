@@ -16,8 +16,8 @@
       this.options = $.extend({}, TreeSelect.defaults, options);
 
       this.isOpen = false;
-      this.selectedOptions = []; // Array of selected nodes
-      this.expandedNodes = new Set(); // Set of expanded node IDs
+      this.selectedIds = new Set();
+      this.expandedNodes = new Set(); 
 
       this._setupDropdown();
       this._setupEventHandlers();
@@ -84,11 +84,20 @@
       this._renderNodes(this.options.data, this.$treeContainer, 0);
     }
 
+    _isIndeterminate(node) {
+      if (!this.options.multiple || !node.children || node.children.length === 0) return false;
+      if (this.selectedIds.has(node.id)) return false;
+      
+      let descendants = this._getAllDescendants(node);
+      return descendants.some(desc => this.selectedIds.has(desc.id));
+    }
+
     _renderNodes(nodes, container, level) {
       nodes.forEach(node => {
         let hasChildren = node.children && node.children.length > 0;
         let isExpanded = this.expandedNodes.has(node.id);
-        let isSelected = this.selectedOptions.find(n => n.id === node.id);
+        let isSelected = this.selectedIds.has(node.id);
+        let isIndeterminate = this._isIndeterminate(node);
 
         let $li = $(`<li class="tree-node" data-id="${node.id}" data-level="${level}"></li>`);
         
@@ -115,7 +124,13 @@
         // Checkbox (if multiple)
         if (this.options.multiple) {
           let checked = isSelected ? 'checked' : '';
-          let $checkbox = $(`<label class="tree-checkbox"><input type="checkbox" ${checked} /><span></span></label>`);
+          let $checkbox = $(`<label class="tree-checkbox"><input type="checkbox" class="filled-in" ${checked} /><span></span></label>`);
+          
+          let inputEl = $checkbox.find('input')[0];
+          if (isIndeterminate) {
+            inputEl.indeterminate = true;
+          }
+
           $checkbox.on('click', (e) => {
             e.stopPropagation(); // Let the content click handle selection
           });
@@ -157,16 +172,74 @@
       this._renderTree();
     }
 
+    _getAllDescendants(node) {
+      let descendants = [];
+      if (node.children) {
+        node.children.forEach(child => {
+          descendants.push(child);
+          descendants = descendants.concat(this._getAllDescendants(child));
+        });
+      }
+      return descendants;
+    }
+
+    _getAncestors(nodeId, nodes = this.options.data, parents = []) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === nodeId) return parents;
+        if (nodes[i].children) {
+          let found = this._getAncestors(nodeId, nodes[i].children, [...parents, nodes[i]]);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    _updateAncestors(node) {
+      let ancestors = this._getAncestors(node.id);
+      if (!ancestors) return;
+      
+      for (let i = ancestors.length - 1; i >= 0; i--) {
+        let parent = ancestors[i];
+        let allChildrenSelected = parent.children.every(child => this.selectedIds.has(child.id));
+        if (allChildrenSelected) {
+          this.selectedIds.add(parent.id);
+        } else {
+          this.selectedIds.delete(parent.id);
+        }
+      }
+    }
+
+    _getSelectedNodes(nodes) {
+      let result = [];
+      nodes.forEach(node => {
+        if (this.selectedIds.has(node.id)) result.push(node);
+        if (node.children) {
+          result = result.concat(this._getSelectedNodes(node.children));
+        }
+      });
+      return result;
+    }
+
     _handleNodeSelect(node) {
       if (this.options.multiple) {
-        let index = this.selectedOptions.findIndex(n => n.id === node.id);
-        if (index > -1) {
-          this.selectedOptions.splice(index, 1);
+        let currentlySelected = this.selectedIds.has(node.id);
+        
+        let descendants = this._getAllDescendants(node);
+        let nodesToChange = [node, ...descendants];
+        
+        if (currentlySelected) {
+          nodesToChange.forEach(n => this.selectedIds.delete(n.id));
         } else {
-          this.selectedOptions.push(node);
+          nodesToChange.forEach(n => this.selectedIds.add(n.id));
+          if (node.children && node.children.length > 0) {
+            this.expandedNodes.add(node.id);
+          }
         }
+        
+        this._updateAncestors(node);
       } else {
-        this.selectedOptions = [node];
+        this.selectedIds.clear();
+        this.selectedIds.add(node.id);
         if (this.options.closeOnSelect && (!node.children || node.children.length === 0)) {
           this.close();
         }
@@ -176,12 +249,24 @@
       this._renderTree();
 
       if (typeof this.options.onChange === 'function') {
-        this.options.onChange(this.selectedOptions);
+        let selectedNodes = this._getSelectedNodes(this.options.data);
+        this.options.onChange(selectedNodes);
       }
     }
 
     _updateInput() {
-      let titles = this.selectedOptions.map(n => n.title).join(', ');
+      let displayNodes = [];
+      if (this.options.multiple) {
+        let selectedNodes = this._getSelectedNodes(this.options.data);
+        displayNodes = selectedNodes.filter(node => {
+          let ancestors = this._getAncestors(node.id) || [];
+          return !ancestors.some(a => this.selectedIds.has(a.id));
+        });
+      } else {
+        displayNodes = this._getSelectedNodes(this.options.data);
+      }
+      
+      let titles = displayNodes.map(n => n.title).join(', ');
       this.$el.val(titles);
     }
 

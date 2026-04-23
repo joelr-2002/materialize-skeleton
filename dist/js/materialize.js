@@ -13071,8 +13071,8 @@ $jscomp.polyfill = function (e, r, p, m) {
       _this82.options = $.extend({}, TreeSelect.defaults, options);
 
       _this82.isOpen = false;
-      _this82.selectedOptions = []; // Array of selected nodes
-      _this82.expandedNodes = new Set(); // Set of expanded node IDs
+      _this82.selectedIds = new Set();
+      _this82.expandedNodes = new Set();
 
       _this82._setupDropdown();
       _this82._setupEventHandlers();
@@ -13135,16 +13135,28 @@ $jscomp.polyfill = function (e, r, p, m) {
         this._renderNodes(this.options.data, this.$treeContainer, 0);
       }
     }, {
+      key: "_isIndeterminate",
+      value: function _isIndeterminate(node) {
+        var _this83 = this;
+
+        if (!this.options.multiple || !node.children || node.children.length === 0) return false;
+        if (this.selectedIds.has(node.id)) return false;
+
+        var descendants = this._getAllDescendants(node);
+        return descendants.some(function (desc) {
+          return _this83.selectedIds.has(desc.id);
+        });
+      }
+    }, {
       key: "_renderNodes",
       value: function _renderNodes(nodes, container, level) {
-        var _this83 = this;
+        var _this84 = this;
 
         nodes.forEach(function (node) {
           var hasChildren = node.children && node.children.length > 0;
-          var isExpanded = _this83.expandedNodes.has(node.id);
-          var isSelected = _this83.selectedOptions.find(function (n) {
-            return n.id === node.id;
-          });
+          var isExpanded = _this84.expandedNodes.has(node.id);
+          var isSelected = _this84.selectedIds.has(node.id);
+          var isIndeterminate = _this84._isIndeterminate(node);
 
           var $li = $("<li class=\"tree-node\" data-id=\"" + node.id + "\" data-level=\"" + level + "\"></li>");
 
@@ -13161,7 +13173,7 @@ $jscomp.polyfill = function (e, r, p, m) {
             $expandIcon.html(isExpanded ? '&#9662;' : '&#9656;'); // Down / Right triangle
             $expandIcon.on('click', function (e) {
               e.stopPropagation();
-              _this83._toggleNode(node.id);
+              _this84._toggleNode(node.id);
             });
           } else {
             $expandIcon.addClass('leaf');
@@ -13169,9 +13181,15 @@ $jscomp.polyfill = function (e, r, p, m) {
           $content.append($expandIcon);
 
           // Checkbox (if multiple)
-          if (_this83.options.multiple) {
+          if (_this84.options.multiple) {
             var checked = isSelected ? 'checked' : '';
-            var $checkbox = $("<label class=\"tree-checkbox\"><input type=\"checkbox\" " + checked + " /><span></span></label>");
+            var $checkbox = $("<label class=\"tree-checkbox\"><input type=\"checkbox\" class=\"filled-in\" " + checked + " /><span></span></label>");
+
+            var inputEl = $checkbox.find('input')[0];
+            if (isIndeterminate) {
+              inputEl.indeterminate = true;
+            }
+
             $checkbox.on('click', function (e) {
               e.stopPropagation(); // Let the content click handle selection
             });
@@ -13185,7 +13203,7 @@ $jscomp.polyfill = function (e, r, p, m) {
           // Click handler for selection
           $content.on('click', function (e) {
             e.stopPropagation();
-            _this83._handleNodeSelect(node);
+            _this84._handleNodeSelect(node);
           });
 
           $li.append($content);
@@ -13196,7 +13214,7 @@ $jscomp.polyfill = function (e, r, p, m) {
             if (!isExpanded) {
               $childrenContainer.css('display', 'none');
             }
-            _this83._renderNodes(node.children, $childrenContainer, level + 1);
+            _this84._renderNodes(node.children, $childrenContainer, level + 1);
             $li.append($childrenContainer);
           }
 
@@ -13214,19 +13232,93 @@ $jscomp.polyfill = function (e, r, p, m) {
         this._renderTree();
       }
     }, {
+      key: "_getAllDescendants",
+      value: function _getAllDescendants(node) {
+        var _this85 = this;
+
+        var descendants = [];
+        if (node.children) {
+          node.children.forEach(function (child) {
+            descendants.push(child);
+            descendants = descendants.concat(_this85._getAllDescendants(child));
+          });
+        }
+        return descendants;
+      }
+    }, {
+      key: "_getAncestors",
+      value: function _getAncestors(nodeId, nodes = this.options.data, parents = []) {
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].id === nodeId) return parents;
+          if (nodes[i].children) {
+            var found = this._getAncestors(nodeId, nodes[i].children, [...parents, nodes[i]]);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+    }, {
+      key: "_updateAncestors",
+      value: function _updateAncestors(node) {
+        var _this86 = this;
+
+        var ancestors = this._getAncestors(node.id);
+        if (!ancestors) return;
+
+        for (var i = ancestors.length - 1; i >= 0; i--) {
+          var parent = ancestors[i];
+          var allChildrenSelected = parent.children.every(function (child) {
+            return _this86.selectedIds.has(child.id);
+          });
+          if (allChildrenSelected) {
+            this.selectedIds.add(parent.id);
+          } else {
+            this.selectedIds.delete(parent.id);
+          }
+        }
+      }
+    }, {
+      key: "_getSelectedNodes",
+      value: function _getSelectedNodes(nodes) {
+        var _this87 = this;
+
+        var result = [];
+        nodes.forEach(function (node) {
+          if (_this87.selectedIds.has(node.id)) result.push(node);
+          if (node.children) {
+            result = result.concat(_this87._getSelectedNodes(node.children));
+          }
+        });
+        return result;
+      }
+    }, {
       key: "_handleNodeSelect",
       value: function _handleNodeSelect(node) {
+        var _this88 = this;
+
         if (this.options.multiple) {
-          var index = this.selectedOptions.findIndex(function (n) {
-            return n.id === node.id;
-          });
-          if (index > -1) {
-            this.selectedOptions.splice(index, 1);
+          var currentlySelected = this.selectedIds.has(node.id);
+
+          var descendants = this._getAllDescendants(node);
+          var nodesToChange = [node, ...descendants];
+
+          if (currentlySelected) {
+            nodesToChange.forEach(function (n) {
+              return _this88.selectedIds.delete(n.id);
+            });
           } else {
-            this.selectedOptions.push(node);
+            nodesToChange.forEach(function (n) {
+              return _this88.selectedIds.add(n.id);
+            });
+            if (node.children && node.children.length > 0) {
+              this.expandedNodes.add(node.id);
+            }
           }
+
+          this._updateAncestors(node);
         } else {
-          this.selectedOptions = [node];
+          this.selectedIds.clear();
+          this.selectedIds.add(node.id);
           if (this.options.closeOnSelect && (!node.children || node.children.length === 0)) {
             this.close();
           }
@@ -13236,13 +13328,29 @@ $jscomp.polyfill = function (e, r, p, m) {
         this._renderTree();
 
         if (typeof this.options.onChange === 'function') {
-          this.options.onChange(this.selectedOptions);
+          var selectedNodes = this._getSelectedNodes(this.options.data);
+          this.options.onChange(selectedNodes);
         }
       }
     }, {
       key: "_updateInput",
       value: function _updateInput() {
-        var titles = this.selectedOptions.map(function (n) {
+        var _this89 = this;
+
+        var displayNodes = [];
+        if (this.options.multiple) {
+          var selectedNodes = this._getSelectedNodes(this.options.data);
+          displayNodes = selectedNodes.filter(function (node) {
+            var ancestors = _this89._getAncestors(node.id) || [];
+            return !ancestors.some(function (a) {
+              return _this89.selectedIds.has(a.id);
+            });
+          });
+        } else {
+          displayNodes = this._getSelectedNodes(this.options.data);
+        }
+
+        var titles = displayNodes.map(function (n) {
           return n.title;
         }).join(', ');
         this.$el.val(titles);
