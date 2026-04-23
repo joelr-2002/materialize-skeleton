@@ -1,0 +1,154 @@
+<div class="container bsa">
+  <div class="row">
+    <div class="col s12 m8 offset-m1 xl7 offset-xl1">
+
+      <div id="tree-select" class="section scrollspy">
+        <p class="caption">TreeSelect is a component that combines a tree structure with a select dropdown, ideal for hierarchical data selection.</p>
+
+        <h3 class="header">Example</h3>
+        <div class="row">
+          <div class="col s12 m6">
+            <div class="input-field">
+              <input type="text" id="example-tree-select" placeholder="Select node..." readonly>
+              <label for="example-tree-select" class="active">Hierarchical Selection</label>
+            </div>
+          </div>
+          <div class="col s12 m6">
+            <div class="input-field">
+              <input type="text" id="example-tree-select-multi" placeholder="Select nodes..." readonly>
+              <label for="example-tree-select-multi" class="active">Multiple Selection</label>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            var treeData = [
+              {
+                id: '1', title: 'Node 1', children: [
+                  { id: '1-1', title: 'Child Node 1' },
+                  { id: '1-2', title: 'Child Node 2', children: [
+                      { id: '1-2-1', title: 'Grandchild 1' },
+                      { id: '1-2-2', title: 'Grandchild 2' }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: '2', title: 'Node 2', children: [
+                  { id: '2-1', title: 'Child Node 3' },
+                  { id: '2-2', title: 'Child Node 4' }
+                ]
+              }
+            ];
+
+            var elemSingle = document.getElementById('example-tree-select');
+            if (elemSingle && typeof M.TreeSelect !== 'undefined') {
+              M.TreeSelect.init(elemSingle, {
+                data: treeData,
+                multiple: false
+              });
+            }
+
+            var elemMulti = document.getElementById('example-tree-select-multi');
+            if (elemMulti && typeof M.TreeSelect !== 'undefined') {
+              M.TreeSelect.init(elemMulti, {
+                data: treeData,
+                multiple: true
+              });
+            }
+          });
+        </script>
+
+        <h3 class="header">Usage</h3>
+        <p>Tree Select requires an input field to display the selected nodes and trigger the dropdown menu.</p>
+
+        <h5>HTML Setup</h5>
+        <div class="code-snippet"><pre><code class="language-markup">
+  &lt;div class="input-field">
+    &lt;input type="text" id="my-tree-select" placeholder="Select..." readonly>
+    &lt;label for="my-tree-select" class="active">Tree Select&lt;/label>
+  &lt;/div>
+        </code></pre></div>
+
+        <h5>JavaScript Initialization</h5>
+        <div class="code-snippet"><pre><code class="language-javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var treeData = [
+      {
+        id: '1', 
+        title: 'Node 1', 
+        children: [
+          { id: '1-1', title: 'Child Node 1' }
+        ]
+      }
+    ];
+
+    var elem = document.getElementById('my-tree-select');
+    var instance = M.TreeSelect.init(elem, {
+      data: treeData,
+      multiple: true,
+      onChange: function(selectedNodes) {
+        console.log(selectedNodes);
+      }
+    });
+  });
+        </code></pre></div>
+
+        <h3 class="header">Options</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>data</td>
+              <td>Array</td>
+              <td>[]</td>
+              <td>Tree structured data. Each node should have <code class="language-javascript">id</code>, <code class="language-javascript">title</code>, and optionally <code class="language-javascript">children</code>.</td>
+            </tr>
+            <tr>
+              <td>multiple</td>
+              <td>Boolean</td>
+              <td>false</td>
+              <td>If true, checkboxes will be rendered and multiple selections are allowed.</td>
+            </tr>
+            <tr>
+              <td>closeOnSelect</td>
+              <td>Boolean</td>
+              <td>true</td>
+              <td>If true and <code class="language-javascript">multiple</code> is false, the dropdown will close upon selecting a leaf node.</td>
+            </tr>
+            <tr>
+              <td>onChange</td>
+              <td>Function</td>
+              <td>null</td>
+              <td>Callback fired when selection changes. Receives an array of selected node objects.</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="col hide-on-small-only m3 xl3 offset-xl1">
+      <div class="toc-wrapper">
+        <div class="buysellads hide-on-small-only">
+          <!-- CarbonAds Zone Code -->
+          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CKYIK27J&placement=materializecss" id="_carbonads_js"></script>
+        </div>
+        <div style="height: 1px;">
+          <ul class="section table-of-contents">
+            <li><a href="#tree-select">Tree Select</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -13049,4 +13049,251 @@ $jscomp.polyfill = function (e, r, p, m) {
   if (M.jQueryLoaded) {
     M.initializeJqueryWrapper(CodeSnippet, 'codeSnippet', 'M_CodeSnippet');
   }
+})(cash);;(function ($) {
+  'use strict';
+
+  var _defaults = {
+    data: [], // Array of objects with id, title, children
+    multiple: false, // If true, checkboxes are shown
+    onChange: null, // Callback when selection changes
+    closeOnSelect: true // Close dropdown when a leaf node is selected (single select)
+  };
+
+  var TreeSelect = function (_Component26) {
+    _inherits(TreeSelect, _Component26);
+
+    function TreeSelect(el, options) {
+      _classCallCheck(this, TreeSelect);
+
+      var _this82 = _possibleConstructorReturn(this, (TreeSelect.__proto__ || Object.getPrototypeOf(TreeSelect)).call(this, TreeSelect, el, options));
+
+      _this82.el.M_TreeSelect = _this82;
+      _this82.options = $.extend({}, TreeSelect.defaults, options);
+
+      _this82.isOpen = false;
+      _this82.selectedOptions = []; // Array of selected nodes
+      _this82.expandedNodes = new Set(); // Set of expanded node IDs
+
+      _this82._setupDropdown();
+      _this82._setupEventHandlers();
+      return _this82;
+    }
+
+    _createClass(TreeSelect, [{
+      key: "destroy",
+      value: function destroy() {
+        this._removeEventHandlers();
+        if (this.$dropdown) {
+          this.$dropdown.remove();
+        }
+        this.el.M_TreeSelect = undefined;
+      }
+    }, {
+      key: "_setupDropdown",
+      value: function _setupDropdown() {
+        this.$dropdown = $('<div class="tree-select-dropdown"></div>');
+        this.$treeContainer = $('<ul class="tree-select-container"></ul>');
+        this.$dropdown.append(this.$treeContainer);
+        $('body').append(this.$dropdown);
+
+        this._renderTree();
+      }
+    }, {
+      key: "_setupEventHandlers",
+      value: function _setupEventHandlers() {
+        this._handleInputClickBound = this._handleInputClick.bind(this);
+        this._handleDocumentClickBound = this._handleDocumentClick.bind(this);
+
+        this.el.addEventListener('click', this._handleInputClickBound);
+        document.addEventListener('click', this._handleDocumentClickBound);
+      }
+    }, {
+      key: "_removeEventHandlers",
+      value: function _removeEventHandlers() {
+        this.el.removeEventListener('click', this._handleInputClickBound);
+        document.removeEventListener('click', this._handleDocumentClickBound);
+      }
+    }, {
+      key: "_handleInputClick",
+      value: function _handleInputClick(e) {
+        e.stopPropagation();
+        this.open();
+      }
+    }, {
+      key: "_handleDocumentClick",
+      value: function _handleDocumentClick(e) {
+        if (!this.isOpen) return;
+        var $target = $(e.target);
+        if (!$target.closest('.tree-select-dropdown').length && $target[0] !== this.el) {
+          this.close();
+        }
+      }
+    }, {
+      key: "_renderTree",
+      value: function _renderTree() {
+        this.$treeContainer.empty();
+        this._renderNodes(this.options.data, this.$treeContainer, 0);
+      }
+    }, {
+      key: "_renderNodes",
+      value: function _renderNodes(nodes, container, level) {
+        var _this83 = this;
+
+        nodes.forEach(function (node) {
+          var hasChildren = node.children && node.children.length > 0;
+          var isExpanded = _this83.expandedNodes.has(node.id);
+          var isSelected = _this83.selectedOptions.find(function (n) {
+            return n.id === node.id;
+          });
+
+          var $li = $("<li class=\"tree-node\" data-id=\"" + node.id + "\" data-level=\"" + level + "\"></li>");
+
+          var paddingLeft = level * 24 + 16;
+          var $content = $("<div class=\"tree-node-content\" style=\"padding-left: " + paddingLeft + "px\"></div>");
+
+          if (isSelected) {
+            $content.addClass('selected');
+          }
+
+          // Expand/Collapse Icon
+          var $expandIcon = $('<span class="tree-expand-icon"></span>');
+          if (hasChildren) {
+            $expandIcon.html(isExpanded ? '&#9662;' : '&#9656;'); // Down / Right triangle
+            $expandIcon.on('click', function (e) {
+              e.stopPropagation();
+              _this83._toggleNode(node.id);
+            });
+          } else {
+            $expandIcon.addClass('leaf');
+          }
+          $content.append($expandIcon);
+
+          // Checkbox (if multiple)
+          if (_this83.options.multiple) {
+            var checked = isSelected ? 'checked' : '';
+            var $checkbox = $("<label class=\"tree-checkbox\"><input type=\"checkbox\" " + checked + " /><span></span></label>");
+            $checkbox.on('click', function (e) {
+              e.stopPropagation(); // Let the content click handle selection
+            });
+            $content.append($checkbox);
+          }
+
+          // Title
+          var $title = $("<span class=\"tree-title\">" + node.title + "</span>");
+          $content.append($title);
+
+          // Click handler for selection
+          $content.on('click', function (e) {
+            e.stopPropagation();
+            _this83._handleNodeSelect(node);
+          });
+
+          $li.append($content);
+
+          // Children container
+          if (hasChildren) {
+            var $childrenContainer = $('<ul class="tree-children"></ul>');
+            if (!isExpanded) {
+              $childrenContainer.hide();
+            }
+            _this83._renderNodes(node.children, $childrenContainer, level + 1);
+            $li.append($childrenContainer);
+          }
+
+          container.append($li);
+        });
+      }
+    }, {
+      key: "_toggleNode",
+      value: function _toggleNode(id) {
+        if (this.expandedNodes.has(id)) {
+          this.expandedNodes.delete(id);
+        } else {
+          this.expandedNodes.add(id);
+        }
+        this._renderTree();
+      }
+    }, {
+      key: "_handleNodeSelect",
+      value: function _handleNodeSelect(node) {
+        if (this.options.multiple) {
+          var index = this.selectedOptions.findIndex(function (n) {
+            return n.id === node.id;
+          });
+          if (index > -1) {
+            this.selectedOptions.splice(index, 1);
+          } else {
+            this.selectedOptions.push(node);
+          }
+        } else {
+          this.selectedOptions = [node];
+          if (this.options.closeOnSelect && (!node.children || node.children.length === 0)) {
+            this.close();
+          }
+        }
+
+        this._updateInput();
+        this._renderTree();
+
+        if (typeof this.options.onChange === 'function') {
+          this.options.onChange(this.selectedOptions);
+        }
+      }
+    }, {
+      key: "_updateInput",
+      value: function _updateInput() {
+        var titles = this.selectedOptions.map(function (n) {
+          return n.title;
+        }).join(', ');
+        this.$el.val(titles);
+      }
+    }, {
+      key: "open",
+      value: function open() {
+        if (this.isOpen) return;
+        this.isOpen = true;
+        var rect = this.el.getBoundingClientRect();
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        this.$dropdown.css({
+          top: rect.bottom + scrollTop + 'px',
+          left: rect.left + scrollLeft + 'px',
+          width: rect.width + 'px'
+        });
+        this.$dropdown.addClass('active');
+      }
+    }, {
+      key: "close",
+      value: function close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.$dropdown.removeClass('active');
+      }
+    }], [{
+      key: "init",
+      value: function init(els, options) {
+        return _get(TreeSelect.__proto__ || Object.getPrototypeOf(TreeSelect), "init", this).call(this, this, els, options);
+      }
+    }, {
+      key: "getInstance",
+      value: function getInstance(el) {
+        var domElem = !!el.jquery ? el[0] : el;
+        return domElem.M_TreeSelect;
+      }
+    }, {
+      key: "defaults",
+      get: function () {
+        return _defaults;
+      }
+    }]);
+
+    return TreeSelect;
+  }(Component);
+
+  M.TreeSelect = TreeSelect;
+
+  if (M.jQueryLoaded) {
+    M.initializeJqueryWrapper(TreeSelect, 'treeSelect', 'M_TreeSelect');
+  }
 })(cash);
