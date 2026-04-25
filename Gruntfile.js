@@ -182,7 +182,9 @@ module.exports = function(grunt) {
           'js/cascader.js',
           'js/steps.js',
           'js/codeSnippet.js',
-          'js/treeSelect.js'
+          'js/treeSelect.js',
+          'js/upload.js',
+          'js/upload.js'
         ],
         // the location of the resulting JS file
         dest: 'temp/js/materialize.js'
@@ -227,7 +229,9 @@ module.exports = function(grunt) {
           'js/cascader.js',
           'js/steps.js',
           'js/codeSnippet.js',
-          'js/treeSelect.js'
+          'js/treeSelect.js',
+          'js/upload.js',
+          'js/upload.js'
         ],
         // the location of the resulting JS file
         dest: 'temp/js/materialize_concat.js'
@@ -457,7 +461,8 @@ module.exports = function(grunt) {
           'floating-action-button.html': 'jade/floating-action-button.jade',
           'auto-init.html': 'jade/auto-init.jade',
           'skeleton.html': 'jade/skeleton.jade',
-          'cascader.html': 'jade/cascader.jade'
+          'cascader.html': 'jade/cascader.jade',
+          'upload.html': 'jade/upload.jade'
         }
       }
     },

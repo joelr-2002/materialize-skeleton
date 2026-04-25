@@ -1,0 +1,229 @@
+/* Upload Component */
+.upload-container {
+  display: inline-block;
+  position: relative;
+}
+
+.upload-input {
+  display: none !important;
+}
+
+/* Dragger */
+.upload-dragger {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background: #fafafa;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  padding: 16px;
+
+  &.dragover {
+    border-color: #26a69a;
+    background: rgba(38, 166, 154, 0.05);
+  }
+
+  .upload-drag-icon {
+    font-size: 48px;
+    color: #26a69a;
+    margin-bottom: 16px;
+  }
+}
+
+/* File List */
+.upload-list {
+  margin-top: 8px;
+
+  .upload-list-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-top: 8px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+
+      .upload-list-item-remove {
+        opacity: 1;
+      }
+    }
+
+    .upload-list-item-info {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      overflow: hidden;
+      
+      .material-icons {
+        margin-right: 8px;
+        color: #9e9e9e;
+      }
+
+      .upload-list-item-name {
+        flex: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: #333;
+      }
+    }
+
+    .upload-list-item-remove {
+      opacity: 0;
+      cursor: pointer;
+      color: #9e9e9e;
+      transition: opacity 0.3s, color 0.3s;
+
+      &:hover {
+        color: #f44336;
+      }
+    }
+
+    .upload-list-item-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #e0e0e0;
+      
+      .determinate {
+        background-color: #26a69a;
+        height: 100%;
+        transition: width 0.3s;
+      }
+    }
+
+    &.upload-list-item-error {
+      color: #f44336;
+      
+      .upload-list-item-name,
+      .material-icons {
+        color: #f44336;
+      }
+    }
+  }
+}
+
+/* Picture Card / Circle */
+.upload-list-picture-card,
+.upload-list-picture-circle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+
+  .upload-list-item {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    padding: 8px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 8px;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+    }
+
+    &.uploading {
+      border-style: solid;
+      border-color: #26a69a;
+    }
+
+    &.error {
+      border-color: #f44336;
+    }
+
+    &:hover {
+      border-color: #26a69a;
+    }
+
+    .upload-list-item-actions {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s;
+      border-radius: 8px;
+
+      .material-icons {
+        color: white;
+        margin: 0 4px;
+      }
+    }
+
+    &:hover .upload-list-item-actions {
+      opacity: 1;
+    }
+  }
+}
+
+.upload-list-picture-circle {
+  .upload-list-item {
+    border-radius: 50%;
+    
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .upload-list-item-actions {
+      border-radius: 50%;
+    }
+  }
+}
+
+.upload-btn-picture-card {
+  width: 104px;
+  height: 104px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: #26a69a;
+  }
+
+  .material-icons {
+    font-size: 24px;
+    color: #999;
+  }
+
+  .upload-text {
+    margin-top: 8px;
+    color: #666;
+  }
+}
+
+.upload-btn-picture-circle {
+  @extend .upload-btn-picture-card;
+  border-radius: 50%;
+}

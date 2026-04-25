@@ -13247,11 +13247,13 @@ $jscomp.polyfill = function (e, r, p, m) {
       }
     }, {
       key: "_getAncestors",
-      value: function _getAncestors(nodeId, nodes = this.options.data, parents = []) {
+      value: function _getAncestors(nodeId, nodes, parents) {
+        nodes = nodes || this.options.data;
+        parents = parents || [];
         for (var i = 0; i < nodes.length; i++) {
           if (nodes[i].id === nodeId) return parents;
           if (nodes[i].children) {
-            var found = this._getAncestors(nodeId, nodes[i].children, [...parents, nodes[i]]);
+            var found = this._getAncestors(nodeId, nodes[i].children, parents.concat([nodes[i]]));
             if (found) return found;
           }
         }
@@ -13300,7 +13302,7 @@ $jscomp.polyfill = function (e, r, p, m) {
           var currentlySelected = this.selectedIds.has(node.id);
 
           var descendants = this._getAllDescendants(node);
-          var nodesToChange = [node, ...descendants];
+          var nodesToChange = [node].concat(descendants);
 
           if (currentlySelected) {
             nodesToChange.forEach(function (n) {
@@ -13404,4 +13406,437 @@ $jscomp.polyfill = function (e, r, p, m) {
   if (M.jQueryLoaded) {
     M.initializeJqueryWrapper(TreeSelect, 'treeSelect', 'M_TreeSelect');
   }
-})(cash);
+})(cash);;(function ($, document) {
+  'use strict';
+
+  var _defaults = {
+    action: '',
+    name: 'file',
+    multiple: false,
+    directory: false,
+    accept: '',
+    listType: 'text', // 'text', 'picture-card', 'picture-circle'
+    showUploadList: true,
+    defaultFileList: [],
+    pastable: false,
+    drag: false,
+    headers: {},
+    beforeUpload: null,
+    onChange: null,
+    onRemove: null,
+    onDrop: null,
+    onPreview: null
+  };
+
+  var Upload = function (_Component27) {
+    _inherits(Upload, _Component27);
+
+    function Upload(el, options) {
+      _classCallCheck(this, Upload);
+
+      var _this90 = _possibleConstructorReturn(this, (Upload.__proto__ || Object.getPrototypeOf(Upload)).call(this, Upload, el, options));
+
+      _this90.el.M_Upload = _this90;
+      _this90.options = $.extend({}, Upload.defaults, options);
+
+      _this90.fileList = _this90.options.defaultFileList.slice();
+      _this90._setupDOM();
+      _this90._setupEventHandlers();
+      _this90._renderFileList();
+      return _this90;
+    }
+
+    _createClass(Upload, [{
+      key: "destroy",
+      value: function destroy() {
+        this._removeEventHandlers();
+        this.$input.remove();
+        if (this.$listContainer) {
+          this.$listContainer.remove();
+        }
+        this.el.M_Upload = undefined;
+      }
+    }, {
+      key: "_setupDOM",
+      value: function _setupDOM() {
+        this.$el.addClass('upload-container');
+
+        // Create hidden file input
+        this.$input = $('<input type="file" class="upload-input">');
+        this.$input.attr('name', this.options.name);
+        if (this.options.multiple) this.$input.attr('multiple', 'multiple');
+        if (this.options.directory) {
+          this.$input.attr('webkitdirectory', 'webkitdirectory');
+          this.$input.attr('directory', 'directory');
+        }
+        if (this.options.accept) this.$input.attr('accept', this.options.accept);
+
+        this.$el.append(this.$input);
+
+        // Setup dragger classes
+        if (this.options.drag) {
+          this.$el.addClass('upload-dragger');
+        }
+
+        // Setup list container
+        if (this.options.showUploadList && this.options.listType !== 'picture-card' && this.options.listType !== 'picture-circle') {
+          this.$listContainer = $('<div class="upload-list"></div>');
+          this.$el.after(this.$listContainer);
+        } else if (this.options.showUploadList) {
+          this.$listContainer = $("<div class=\"upload-list-" + this.options.listType + "\"></div>");
+          this.$el.before(this.$listContainer);
+        }
+      }
+    }, {
+      key: "_setupEventHandlers",
+      value: function _setupEventHandlers() {
+        this._handleClickBound = this._handleClick.bind(this);
+        this._handleChangeBound = this._handleChange.bind(this);
+        this._handleDragOverBound = this._handleDragOver.bind(this);
+        this._handleDragLeaveBound = this._handleDragLeave.bind(this);
+        this._handleDropBound = this._handleDrop.bind(this);
+        this._handlePasteBound = this._handlePaste.bind(this);
+
+        this.el.addEventListener('click', this._handleClickBound);
+        this.$input[0].addEventListener('change', this._handleChangeBound);
+
+        if (this.options.drag) {
+          this.el.addEventListener('dragover', this._handleDragOverBound);
+          this.el.addEventListener('dragleave', this._handleDragLeaveBound);
+          this.el.addEventListener('drop', this._handleDropBound);
+        }
+
+        if (this.options.pastable) {
+          document.addEventListener('paste', this._handlePasteBound);
+        }
+      }
+    }, {
+      key: "_removeEventHandlers",
+      value: function _removeEventHandlers() {
+        this.el.removeEventListener('click', this._handleClickBound);
+        this.$input[0].removeEventListener('change', this._handleChangeBound);
+
+        if (this.options.drag) {
+          this.el.removeEventListener('dragover', this._handleDragOverBound);
+          this.el.removeEventListener('dragleave', this._handleDragLeaveBound);
+          this.el.removeEventListener('drop', this._handleDropBound);
+        }
+
+        if (this.options.pastable) {
+          document.removeEventListener('paste', this._handlePasteBound);
+        }
+      }
+    }, {
+      key: "_handleClick",
+      value: function _handleClick(e) {
+        if (e.target.closest('.upload-list-item-remove')) return;
+        if (e.target.closest('.upload-list-item-preview')) return;
+        this.$input[0].click();
+      }
+    }, {
+      key: "_handleDragOver",
+      value: function _handleDragOver(e) {
+        e.preventDefault();
+        this.$el.addClass('dragover');
+      }
+    }, {
+      key: "_handleDragLeave",
+      value: function _handleDragLeave(e) {
+        e.preventDefault();
+        this.$el.removeClass('dragover');
+      }
+    }, {
+      key: "_handleDrop",
+      value: function _handleDrop(e) {
+        e.preventDefault();
+        this.$el.removeClass('dragover');
+        if (typeof this.options.onDrop === 'function') {
+          this.options.onDrop(e);
+        }
+        var files = e.dataTransfer.files;
+        if (files && files.length) {
+          this._processFiles(files);
+        }
+      }
+    }, {
+      key: "_handlePaste",
+      value: function _handlePaste(e) {
+        var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        var files = [];
+        for (var index in items) {
+          var _item = items[index];
+          if (_item.kind === 'file') {
+            var blob = _item.getAsFile();
+            files.push(blob);
+          }
+        }
+        if (files.length > 0) {
+          this._processFiles(files);
+        }
+      }
+    }, {
+      key: "_handleChange",
+      value: function _handleChange(e) {
+        var files = e.target.files;
+        if (files && files.length) {
+          this._processFiles(files);
+        }
+        // Reset input so same file can be selected again
+        this.$input.val('');
+      }
+    }, {
+      key: "_processFiles",
+      value: function _processFiles(files) {
+        var _this91 = this;
+
+        var fileArr = Array.from(files);
+
+        if (!this.options.multiple) {
+          fileArr = [fileArr[0]];
+        }
+
+        fileArr.forEach(function (file) {
+          var uid = 'rc-upload-' + Date.now() + '-' + Math.random().toString(36).substring(7);
+          var uploadFile = {
+            uid: uid,
+            name: file.name,
+            status: 'uploading',
+            percent: 0,
+            originFileObj: file,
+            size: file.size,
+            type: file.type
+          };
+
+          var shouldUpload = true;
+          var p = Promise.resolve(true);
+
+          if (typeof _this91.options.beforeUpload === 'function') {
+            var result = _this91.options.beforeUpload(file, fileArr);
+            if (result === false) {
+              shouldUpload = false;
+            } else if (result === Upload.LIST_IGNORE) {
+              return; // skip this file
+            } else if (result instanceof Promise) {
+              p = result.then(function (res) {
+                if (res === false) shouldUpload = false;
+                if (res === Upload.LIST_IGNORE) return Promise.reject(Upload.LIST_IGNORE);
+              }).catch(function (err) {
+                if (err !== Upload.LIST_IGNORE) shouldUpload = false;else return Promise.reject(err);
+              });
+            }
+          }
+
+          p.then(function () {
+            if (!shouldUpload) {
+              uploadFile.status = 'error';
+            }
+
+            if (!_this91.options.multiple) {
+              _this91.fileList = [uploadFile];
+            } else {
+              _this91.fileList.push(uploadFile);
+            }
+
+            _this91._triggerChange(uploadFile);
+            _this91._renderFileList();
+
+            if (shouldUpload && _this91.options.action) {
+              _this91._uploadFile(uploadFile);
+            }
+          }).catch(function (err) {
+            if (err === Upload.LIST_IGNORE) {
+              // ignore
+            }
+          });
+        });
+      }
+    }, {
+      key: "_uploadFile",
+      value: function _uploadFile(uploadFile) {
+        var _this92 = this;
+
+        var xhr = new XMLHttpRequest();
+        var formData = new FormData();
+        formData.append(this.options.name, uploadFile.originFileObj);
+
+        xhr.upload.onprogress = function (e) {
+          if (e.lengthComputable) {
+            uploadFile.percent = Math.round(e.loaded / e.total * 100);
+            _this92._triggerChange(uploadFile);
+            _this92._renderFileList();
+          }
+        };
+
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            uploadFile.status = 'done';
+            try {
+              uploadFile.response = JSON.parse(xhr.responseText);
+            } catch (e) {
+              uploadFile.response = xhr.responseText;
+            }
+          } else {
+            uploadFile.status = 'error';
+            uploadFile.error = new Error('Upload Error: ' + xhr.status);
+          }
+          _this92._triggerChange(uploadFile);
+          _this92._renderFileList();
+        };
+
+        xhr.onerror = function () {
+          uploadFile.status = 'error';
+          uploadFile.error = new Error('Network Error');
+          _this92._triggerChange(uploadFile);
+          _this92._renderFileList();
+        };
+
+        xhr.open('POST', this.options.action, true);
+
+        for (var key in this.options.headers) {
+          xhr.setRequestHeader(key, this.options.headers[key]);
+        }
+
+        xhr.send(formData);
+      }
+    }, {
+      key: "_triggerChange",
+      value: function _triggerChange(file) {
+        if (typeof this.options.onChange === 'function') {
+          this.options.onChange({
+            file: file,
+            fileList: this.fileList.slice()
+          });
+        }
+      }
+    }, {
+      key: "_handleRemove",
+      value: function _handleRemove(file) {
+        var _this93 = this;
+
+        if (typeof this.options.onRemove === 'function') {
+          var result = this.options.onRemove(file);
+          if (result === false) return;
+          if (result instanceof Promise) {
+            result.then(function (res) {
+              if (res !== false) _this93._removeFileFromList(file);
+            });
+            return;
+          }
+        }
+        this._removeFileFromList(file);
+      }
+    }, {
+      key: "_removeFileFromList",
+      value: function _removeFileFromList(file) {
+        this.fileList = this.fileList.filter(function (f) {
+          return f.uid !== file.uid;
+        });
+        this._triggerChange($.extend({}, file, { status: 'removed' }));
+        this._renderFileList();
+      }
+    }, {
+      key: "_renderFileList",
+      value: function _renderFileList() {
+        var _this94 = this;
+
+        if (!this.options.showUploadList || !this.$listContainer) return;
+
+        this.$listContainer.empty();
+
+        this.fileList.forEach(function (file) {
+          var $item = void 0;
+
+          if (_this94.options.listType === 'picture-card' || _this94.options.listType === 'picture-circle') {
+            $item = $("<div class=\"upload-list-item " + file.status + "\"></div>");
+
+            if (file.url || file.thumbUrl) {
+              $item.append("<img src=\"" + (file.url || file.thumbUrl) + "\" alt=\"" + file.name + "\">");
+            } else if (file.originFileObj && file.originFileObj.type.startsWith('image/')) {
+              // Generate temporary preview
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                if ($item.find('img').length === 0) {
+                  file.thumbUrl = e.target.result;
+                  $item.prepend("<img src=\"" + e.target.result + "\" alt=\"" + file.name + "\">");
+                }
+              };
+              reader.readAsDataURL(file.originFileObj);
+            } else {
+              $item.append('<i class="material-icons">insert_drive_file</i>');
+            }
+
+            var $actions = $('<div class="upload-list-item-actions"></div>');
+
+            var $previewBtn = $('<i class="material-icons upload-list-item-preview">visibility</i>');
+            $previewBtn.on('click', function (e) {
+              e.stopPropagation();
+              if (typeof _this94.options.onPreview === 'function') _this94.options.onPreview(file);
+            });
+            $actions.append($previewBtn);
+
+            var $removeBtn = $('<i class="material-icons upload-list-item-remove">delete</i>');
+            $removeBtn.on('click', function (e) {
+              e.stopPropagation();
+              _this94._handleRemove(file);
+            });
+            $actions.append($removeBtn);
+
+            $item.append($actions);
+
+            if (file.status === 'uploading') {
+              // add a small progress overlay
+              $item.append("<div style=\"position:absolute; bottom:0; left:0; height:4px; background:#26a69a; width:" + file.percent + "%\"></div>");
+            }
+          } else {
+            // Text List
+            $item = $("<div class=\"upload-list-item upload-list-item-" + file.status + "\"></div>");
+
+            var icon = file.status === 'uploading' ? 'cloud_upload' : file.status === 'error' ? 'error_outline' : 'attach_file';
+
+            var $info = $("\n            <div class=\"upload-list-item-info\">\n              <i class=\"material-icons\">" + icon + "</i>\n              <span class=\"upload-list-item-name\">" + file.name + "</span>\n            </div>\n          ");
+
+            var _$removeBtn = $('<i class="material-icons upload-list-item-remove">close</i>');
+            _$removeBtn.on('click', function (e) {
+              e.stopPropagation();
+              _this94._handleRemove(file);
+            });
+
+            $item.append($info).append(_$removeBtn);
+
+            if (file.status === 'uploading') {
+              var $progress = $("\n              <div class=\"upload-list-item-progress\">\n                <div class=\"determinate\" style=\"width: " + file.percent + "%\"></div>\n              </div>\n            ");
+              $item.append($progress);
+            }
+          }
+
+          _this94.$listContainer.append($item);
+        });
+      }
+    }], [{
+      key: "init",
+      value: function init(els, options) {
+        return _get(Upload.__proto__ || Object.getPrototypeOf(Upload), "init", this).call(this, this, els, options);
+      }
+    }, {
+      key: "getInstance",
+      value: function getInstance(el) {
+        var domElem = !!el.jquery ? el[0] : el;
+        return domElem.M_Upload;
+      }
+    }, {
+      key: "defaults",
+      get: function () {
+        return _defaults;
+      }
+    }]);
+
+    return Upload;
+  }(Component);
+
+  Upload.LIST_IGNORE = 'LIST_IGNORE';
+  M.Upload = Upload;
+
+  if (M.jQueryLoaded) {
+    M.initializeJqueryWrapper(Upload, 'upload', 'M_Upload');
+  }
+})(cash, document);

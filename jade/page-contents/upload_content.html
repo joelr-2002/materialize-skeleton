@@ -1,0 +1,156 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12 m8 offset-m1 xl7 offset-xl1">
+
+      <div id="introduction" class="section scrollspy">
+        <p class="caption">
+          Upload component is used to select and upload files or drag and drop files.
+        </p>
+
+        <h3 class="header">Upload by Clicking</h3>
+        <p>Classic mode. File selection dialog pops up when the upload button is clicked.</p>
+        <div class="upload-demo" id="upload-basic">
+          <div class="btn waves-effect waves-light">
+            <span><i class="material-icons left">cloud_upload</i> Click to Upload</span>
+          </div>
+        </div>
+        <pre><code class="language-javascript">
+// Basic initialization
+let el = document.querySelector('#upload-basic');
+let instance = M.Upload.init(el, {
+  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  name: 'file',
+  onChange: function(info) {
+    if (info.file.status === 'done') {
+      M.toast({html: `${info.file.name} uploaded successfully`});
+    } else if (info.file.status === 'error') {
+      M.toast({html: `${info.file.name} upload failed`});
+    }
+  }
+});
+        </code></pre>
+      </div>
+
+      <div id="drag-drop" class="section scrollspy">
+        <h3 class="header">Drag and Drop</h3>
+        <p>You can drag files to a specific area to upload. Alternatively, you can also upload by selecting.</p>
+        <div id="upload-drag" style="height: 200px;">
+          <div class="upload-drag-icon"><i class="material-icons">inbox</i></div>
+          <p>Click or drag file to this area to upload</p>
+        </div>
+        <pre><code class="language-javascript">
+M.Upload.init(document.querySelector('#upload-drag'), {
+  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  multiple: true,
+  drag: true,
+  onDrop: function(e) {
+    console.log('Dropped files', e.dataTransfer.files);
+  }
+});
+        </code></pre>
+      </div>
+
+      <div id="picture-card" class="section scrollspy">
+        <h3 class="header">Pictures Wall</h3>
+        <p>After users upload pictures, the thumbnail will be shown in a list.</p>
+        <div id="upload-picture">
+          <div class="upload-btn-picture-card">
+            <i class="material-icons">add</i>
+            <div class="upload-text">Upload</div>
+          </div>
+        </div>
+        <pre><code class="language-javascript">
+M.Upload.init(document.querySelector('#upload-picture'), {
+  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  listType: 'picture-card',
+  multiple: true,
+  defaultFileList: [
+    {
+      uid: '1',
+      name: 'image.png',
+      status: 'done',
+      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+    }
+  ]
+});
+        </code></pre>
+      </div>
+
+      <div id="picture-circle" class="section scrollspy">
+        <h3 class="header">Pictures Circle</h3>
+        <p>Alternative display for picture-card, useful for avatars.</p>
+        <div id="upload-circle">
+          <div class="upload-btn-picture-circle">
+            <i class="material-icons">add</i>
+            <div class="upload-text">Upload</div>
+          </div>
+        </div>
+        <pre><code class="language-javascript">
+M.Upload.init(document.querySelector('#upload-circle'), {
+  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  listType: 'picture-circle',
+  multiple: false
+});
+        </code></pre>
+      </div>
+
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="col hide-on-small-only m3 xl3 offset-xl1">
+      <div class="toc-wrapper">
+        <ul class="section table-of-contents">
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#drag-drop">Drag and Drop</a></li>
+          <li><a href="#picture-card">Pictures Wall</a></li>
+          <li><a href="#picture-circle">Pictures Circle</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    M.Upload.init(document.querySelector('#upload-basic'), {
+      action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+      name: 'file',
+      onChange: function(info) {
+        if (info.file.status === 'done') {
+          M.toast({html: `${info.file.name} uploaded successfully`});
+        } else if (info.file.status === 'error') {
+          M.toast({html: `${info.file.name} upload failed`});
+        }
+      }
+    });
+
+    M.Upload.init(document.querySelector('#upload-drag'), {
+      action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+      multiple: true,
+      drag: true,
+      onDrop: function(e) {
+        console.log('Dropped files', e.dataTransfer.files);
+      }
+    });
+
+    M.Upload.init(document.querySelector('#upload-picture'), {
+      action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+      listType: 'picture-card',
+      multiple: true,
+      defaultFileList: [
+        {
+          uid: '1',
+          name: 'image.png',
+          status: 'done',
+          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        }
+      ]
+    });
+
+    M.Upload.init(document.querySelector('#upload-circle'), {
+      action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+      listType: 'picture-circle',
+      multiple: false
+    });
+  });
+</script>
