@@ -183,11 +183,13 @@
       return descendants;
     }
 
-    _getAncestors(nodeId, nodes = this.options.data, parents = []) {
+    _getAncestors(nodeId, nodes, parents) {
+      nodes = nodes || this.options.data;
+      parents = parents || [];
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].id === nodeId) return parents;
         if (nodes[i].children) {
-          let found = this._getAncestors(nodeId, nodes[i].children, [...parents, nodes[i]]);
+          let found = this._getAncestors(nodeId, nodes[i].children, parents.concat([nodes[i]]));
           if (found) return found;
         }
       }
@@ -225,7 +227,7 @@
         let currentlySelected = this.selectedIds.has(node.id);
         
         let descendants = this._getAllDescendants(node);
-        let nodesToChange = [node, ...descendants];
+        let nodesToChange = [node].concat(descendants);
         
         if (currentlySelected) {
           nodesToChange.forEach(n => this.selectedIds.delete(n.id));
